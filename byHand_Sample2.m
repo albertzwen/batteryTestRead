@@ -1,3 +1,7 @@
+%% Purpose: for cross-reference
+% By hand indicates that I had gone through the spreadsheet and plotted two
+% charge/discharge cycles by inputting their row and column numbers
+% directly into MATLAB. Incredibly frustrating. 
 data=xlsread('Sample_2_cycles.xlsx');
 % IMPORTANT!: freezing first three rows offsets indexing by 3
 %%%% Charging %%%%%%%%%%%%%%%%%

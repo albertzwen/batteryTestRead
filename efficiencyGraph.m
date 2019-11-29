@@ -1,5 +1,9 @@
 function graph = efficiencyGraph(fileName, sheet, excludeThese)
 %% Description: A function that will plot charge/discharge energies and efficiencies for various cycles
+
+% Much of the logic that went into this script was also used in
+% capacityVoltage.m, albeit much simpler to code overall. 
+
 %% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% fileName = name of the .xls or .xlsx file containing data
 %% sheet = name of sheet containing data at the start of every cycle
