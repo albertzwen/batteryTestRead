@@ -1,4 +1,4 @@
-function graph = plotCapacityVoltage(fileName, sheet, excludeCycles, excludeRows)
+function graph                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 = plotCapacityVoltage(fileName, sheet, excludeCycles, excludeRows)
 h = getCapacityVoltage(fileName, sheet, excludeCycles, excludeRows);
 %% Function that takes data from readTestData and creates figure
 %  Will automatically exclude any outliers
