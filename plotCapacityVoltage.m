@@ -39,7 +39,7 @@ for k = 1:length(h)
         cyc_chg_cap = [cyc_chg_cap; cap];
         cyc_chg_pot = [cyc_chg_pot; pot];
     end
-    [cyc_chg_cap, cyc_chg_pot] = outliersCapacityVoltage(cyc_chg_cap, cyc_chg_pot);
+    %[cyc_chg_cap, cyc_chg_pot] = outliersCapacityVoltage(cyc_chg_cap, cyc_chg_pot);
     chg_cap = [chg_cap; cyc_chg_cap];
     chg_pot = [chg_pot; cyc_chg_pot];
 
@@ -53,7 +53,7 @@ for k = 1:length(h)
         cyc_dchg_cap = [cyc_dchg_cap; cap];
         cyc_dchg_pot = [cyc_dchg_pot; pot];
     end
-    [cyc_dchg_cap, cyc_dchg_pot] = outliersCapacityVoltage(cyc_dchg_cap, cyc_dchg_pot);
+    %[cyc_dchg_cap, cyc_dchg_pot] = outliersCapacityVoltage(cyc_dchg_cap, cyc_dchg_pot);
     dchg_cap = [dchg_cap; cyc_dchg_cap];
     dchg_pot = [dchg_pot; cyc_dchg_pot];
 end
@@ -69,7 +69,7 @@ xlabel ('Capacity (µAh)','FontSize',20,'FontWeight','bold');
 a = get(gca,'XTickLabel');
 set(gca, 'xtick', 0:5:30, 'XTickLabel',a,'fontsize',16)
 set(gcf,'color','white')
-% xticks([0:0.1:0.8]);
+xticks('auto');
 yticks([3 3.2 3.4 3.6 3.8 4.0 4.2 4.4]);
 graph = gcf;
 end
