@@ -1,4 +1,13 @@
-function graph = efficiencyGraph(fileName, sheet, excludeThese)
+function graph = efficiencyGraph()
+fileName = input('Which file do you want this script to read?\n\nInput the file name (quotation marks not necessary):   ', 's');
+sheet = input('Which sheet do you want this script to read?\nPlease enter the sheet number\n\nInput your answer:   ');
+excludeThese = input('Which cycles do you wish to exclude from the data?\nYou can also leave this part blank and press "ENTER"\n\nInput your answer as a vector:   ');
+graph = getEfficiencyGraph(fileName, sheet, excludeThese);
+end
+
+
+
+function graph = getEfficiencyGraph(fileName, sheet, excludeThese)
 %% Description: A function that will plot charge/discharge energies and efficiencies for various cycles
 
 % Much of the logic that went into this script was also used in
