@@ -1,9 +1,10 @@
 function graph = efficiencyGraph()
+%% Description: the main script, an API, for obtaining an efficiency and capacity double y-axis graph 
 fileName = input('Which file do you want this script to read?\n\nInput the file name (quotation marks not necessary):   ', 's');
 sheet = input('Which sheet do you want this script to read?\nPlease enter the sheet number\n\nInput your answer:   ');
 excludeThese = input('Which cycles do you wish to exclude from the data?\nYou can also leave this part blank and press "ENTER"\n\nInput your answer as a vector:   ');
 graph = getEfficiencyGraph(fileName, sheet, excludeThese);
-end
+
 
 
 
