@@ -1,5 +1,5 @@
 function graph = capacityVoltage()
-%% Description: the main script for obtaining capacity vs voltage graph 
+%% Description: the main script, an API, for obtaining capacity vs voltage graph 
 %% INPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% fileName = name of the spreadsheet/workbook you intend to input
 %% sheet = name or number of the sheet you want to read. 
