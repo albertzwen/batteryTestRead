@@ -2,13 +2,19 @@ function graph = efficiencyGraph()
 %% Description: the main script, an API, for obtaining an efficiency and capacity double y-axis graph 
 fileName = input('Which file do you want this script to read?\n\nInput the file name (quotation marks not necessary):   ', 's');
 sheet = input('Which sheet do you want this script to read?\nPlease enter the sheet number\n\nInput your answer:   ');
+includeCapacity = input('Would you like to include the charge/discharge capacities for every cycle? [Y/N]\nInput your answer here:    ', 's');
+if includeCapacity == 'Y' | includeCapacity == 'Y'
+    includeCapacity = true;
+else
+    includeCapacity = false;
+end
 excludeThese = input('Which cycles do you wish to exclude from the data?\nYou can also leave this part blank and press "ENTER"\n\nInput your answer as a vector:   ');
-graph = getEfficiencyGraph(fileName, sheet, excludeThese);
+graph = getEfficiencyGraph(fileName, sheet, includeCapacity, excludeThese);
 
 
 
 
-function graph = getEfficiencyGraph(fileName, sheet, excludeThese)
+function graph = getEfficiencyGraph(fileName, sheet, includeCapacity, excludeThese)
 %% Description: A function that will plot charge/discharge energies and efficiencies for various cycles
 
 % Much of the logic that went into this script was also used in
@@ -43,47 +49,55 @@ for k = 1:length(cycleIDind)
     efficiency = raw{cycleIDind(k), 6}; 
     
     % if the efficiency doesn't make sense, exclude the data point.
-%     plotThis = {zeros(1, 4)}; 
-    if efficiency > 100.000
-%         plotThis = {[nan nan nan nan]};
-        continue;
-    else 
-        plotThis = {[cycleID engy_chg engy_dchg efficiency]}; 
+    plotThis = {[cycleID NaN]};
+    if efficiency < 100.000 && efficiency > 0.000
+        plotThis = {[cycleID engy_chg engy_dchg NaN]};
+        if includeCapacity == true & ~ismember(excludeThese, cycleID) == 1
+            plotThis = {[cycleID engy_chg engy_dchg efficiency]}; 
+        else 
+            plotThis = {[cycleID efficiency]};
+        end
     end
     points{size(points, 1) + 1, 1} = plotThis; 
 end
 
 %% GRAPHING 
 cycleIDs = [];
-allChgEngy = [];
-allDchgEngy = [];
+if includeCapacity
+    allChgEngy = [];
+    allDchgEngy = [];
+end
 allEfficiency = []; 
 for i = 1:length(points)
     cycle = points{i}{1};
     cycleIDs = [cycleIDs cycle(1)];
-    allChgEngy = [allChgEngy cycle(2)];
-    allDchgEngy = [allDchgEngy cycle(3)];
-    allEfficiency = [allEfficiency cycle(4)];
+    if includeCapacity
+        allChgEngy = [allChgEngy cycle(2)];
+        allDchgEngy = [allDchgEngy cycle(3)];
+        allEfficiency = [allEfficiency cycle(4)];
+    else 
+        allEfficiency = [allEfficiency cycle(2)];
+    end
 end
 
-outlier_chg_engy = isoutlier(allChgEngy);
-outlier_dchg_engy = isoutlier(allDchgEngy);
-for i = 1:length(excludeThese) 
-    ind = cycleIDs(cycleIDs == excludeThese(i));
-    cycleIDs(ind) = nan;
-    allChgEngy(ind) = nan;
-    allDchgEngy(ind) = nan;
-    allEfficiency(ind) = nan;
-end
+% outlier_chg_engy = isoutlier(allChgEngy);
+% outlier_dchg_engy = isoutlier(allDchgEngy);
+% for i = 1:length(excludeThese) 
+%     ind = cycleIDs(cycleIDs == excludeThese(i));
+%     cycleIDs(ind) = nan;
+%     allChgEngy(ind) = nan;
+%     allDchgEngy(ind) = nan;
+%     allEfficiency(ind) = nan;
+% end
 
-allNaNcyc = find(isnan(cycleIDs));
-cycleIDs(allNaNcyc) = [];
-allNaNchg = find(isnan(allChgEngy)); 
-allChgEngy(allNaNchg) = [];
-allNaNdchg = find(isnan(allDchgEngy));
-allDchgEngy(allNaNdchg) = [];
-allNaNeff = find(isnan(allEfficiency));
-allEfficiency(allNaNeff) = [];
+% allNaNcyc = find(isnan(cycleIDs));
+% cycleIDs(allNaNcyc) = [];
+% allNaNchg = find(isnan(allChgEngy)); 
+% allChgEngy(allNaNchg) = [];
+% allNaNdchg = find(isnan(allDchgEngy));
+% allDchgEngy(allNaNdchg) = [];
+% allNaNeff = find(isnan(allEfficiency));
+% allEfficiency(allNaNeff) = [];
 
 % Additional Outlier point exclusion
 % cycleIDs(outlier_chg_engy) = [];
@@ -97,33 +111,47 @@ allEfficiency(allNaNeff) = [];
 % allEfficiency(outlier_dchg_engy) = [];
 
 % plot energies first
-yyaxis left
-plot(cycleIDs, allChgEngy, 'o-', 'LineWidth', 2,...
-    'MarkerSize', 8);
-hold on
-plot(cycleIDs, allDchgEngy, 'o--',...
+if includeCapacity
+    yyaxis left
+    plot(cycleIDs, allChgEngy, 'o-', 'LineWidth', 2,...
+        'MarkerSize', 8);
+    hold on
+    plot(cycleIDs, allDchgEngy, 'o--',...
+        'LineWidth', 2,...
+        'MarkerSize', 8);
+    hold on
+    ylabel('Capacity (mAh)','FontSize',20, 'FontWeight','bold');
+    xlabel ('Cycle','FontSize',20, 'FontWeight','bold');
+    % yticks(0.2:0.1:0.9);
+    hold on
+
+    % plot efficiency
+    yyaxis right
+    plot(cycleIDs, allEfficiency, '-o',...
     'LineWidth', 2,...
-    'MarkerSize', 8);
-hold on
-ylabel('Capacity (mAh)','FontSize',20, 'FontWeight','bold');
-xlabel ('Cycle','FontSize',20, 'FontWeight','bold');
-% yticks(0.2:0.1:0.9);
-hold on
+        'MarkerSize',8);
+    ylabel ('Columbic Efficiency (%)', 'FontSize',20, 'FontWeight','bold');
+    % yticks(65:5:100);
+    hold on
 
-% plot efficiency
-yyaxis right
-plot(cycleIDs, allEfficiency, '-o',...
-'LineWidth', 2,...
-    'MarkerSize',8);
-ylabel ('Columbic Efficiency (%)', 'FontSize',20, 'FontWeight','bold');
-% yticks(65:5:100);
-hold on
+    a = get(gca,'XTickLabel');
+    set(gca,'XTickLabel',a,'fontsize',16)
+    set(gcf,'color','white')
+    % xticks(0:max(raw{:,1}));
+    legend('Charge', 'Discharge', 'Efficiency');
+else
+    plot(cycleIDs, allEfficiency, '-o',...
+    'LineWidth', 2,...
+        'MarkerSize',8);
+    ylabel ('Columbic Efficiency (%)', 'FontSize',20, 'FontWeight','bold');
+    % yticks(65:5:100);
+    hold on
 
-a = get(gca,'XTickLabel');
-set(gca,'XTickLabel',a,'fontsize',16)
-set(gcf,'color','white')
-% xticks(0:max(raw{:,1}));
-legend('Charge', 'Discharge', 'Efficiency');
-
+    a = get(gca,'XTickLabel');
+    set(gca,'XTickLabel',a,'fontsize',16)
+    set(gcf,'color','white')
+%     legend('Charge', 'Discharge', 'Efficiency');
+    xlabel ('Cycle','FontSize',20, 'FontWeight','bold');
+end
 graph = gcf;
     
