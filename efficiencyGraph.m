@@ -49,13 +49,12 @@ for k = 1:length(cycleIDind)
     efficiency = raw{cycleIDind(k), 6}; 
     
     % if the efficiency doesn't make sense, exclude the data point.
-    plotThis = {[cycleID NaN]};
+    plotThis = {[cycleID engy_chg engy_dchg NaN]};
     if efficiency < 100.000 && efficiency > 0.000
-        plotThis = {[cycleID engy_chg engy_dchg NaN]};
-        if includeCapacity == true & ~ismember(excludeThese, cycleID) == 1
+        if includeCapacity == true & ~any(ismember(excludeThese, cycleID))
             plotThis = {[cycleID engy_chg engy_dchg efficiency]}; 
-        else 
-            plotThis = {[cycleID efficiency]};
+        elseif includeCapacity == false
+            plotThis = {[cycleID NaN NaN efficiency]};
         end
     end
     points{size(points, 1) + 1, 1} = plotThis; 
@@ -130,7 +129,7 @@ if includeCapacity
     plot(cycleIDs, allEfficiency, '-o',...
     'LineWidth', 2,...
         'MarkerSize',8);
-    ylabel ('Columbic Efficiency (%)', 'FontSize',20, 'FontWeight','bold');
+    ylabel ('Coulombic Efficiency (%)', 'FontSize',20, 'FontWeight','bold');
     % yticks(65:5:100);
     hold on
 
@@ -143,7 +142,7 @@ else
     plot(cycleIDs, allEfficiency, '-o',...
     'LineWidth', 2,...
         'MarkerSize',8);
-    ylabel ('Columbic Efficiency (%)', 'FontSize',20, 'FontWeight','bold');
+    ylabel ('Coulombic Efficiency (%)', 'FontSize',20, 'FontWeight','bold');
     % yticks(65:5:100);
     hold on
 
