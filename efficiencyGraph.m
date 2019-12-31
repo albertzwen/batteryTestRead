@@ -51,10 +51,8 @@ for k = 1:length(cycleIDind)
     % if the efficiency doesn't make sense, exclude the data point.
     plotThis = {[cycleID engy_chg engy_dchg NaN]};
     if efficiency < 100.000 && efficiency > 0.000
-        if includeCapacity == true & ~any(ismember(excludeThese, cycleID))
+        if ~any(ismember(excludeThese, cycleID))
             plotThis = {[cycleID engy_chg engy_dchg efficiency]}; 
-        elseif includeCapacity == false
-            plotThis = {[cycleID NaN NaN efficiency]};
         end
     end
     points{size(points, 1) + 1, 1} = plotThis; 
@@ -75,7 +73,7 @@ for i = 1:length(points)
         allDchgEngy = [allDchgEngy cycle(3)];
         allEfficiency = [allEfficiency cycle(4)];
     else 
-        allEfficiency = [allEfficiency cycle(2)];
+        allEfficiency = [allEfficiency cycle(4)];
     end
 end
 
